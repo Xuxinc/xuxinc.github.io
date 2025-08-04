@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>D-ID 数字人展示</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background-color: #000;
+    }
+
+    #did-agent {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #000;
+    }
+
+    /* 如果 DID 内容是 iframe 或 video，你也可以对其进一步限制宽高 */
+    iframe, video {
+      max-width: 100%;
+      max-height: 100%;
+    }
+  </style>
+</head>
+<body>
+  <div id="did-agent"></div>
+
+<script type="module"
+      src="https://agent.d-id.com/v2/index.js"
+      data-mode="full"
+      data-client-key="YXV0aDB8Njg4YjM3NDE0MTJjNjc2OTY0MDg2Zjc5OnZvMmNJSHFadFN4MHBHOGpEcEpuTA=="
+      data-agent-id="v2_agt_hEckIazx"
+      data-name="did-agent"
+      data-monitor="true"
+      data-target-id="did-agent">
+</script>
+  
+</body>
+</html>
