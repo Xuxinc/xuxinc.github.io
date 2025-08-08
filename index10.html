@@ -4,80 +4,41 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
   <title>D-ID 数字人展示</title>
-
-  <!-- 放宽前端层面的 CSP，避免 iOS WKWebView 拦截外域脚本/媒体/WS -->
-  <meta http-equiv="Content-Security-Policy"
-        content="default-src 'self' https: data: blob: wss:;
-                 script-src 'self' https://agent.d-id.com 'unsafe-inline' 'unsafe-eval';
-                 style-src 'self' 'unsafe-inline';
-                 img-src * data: blob:;
-                 connect-src * wss: https:;
-                 media-src * blob: data: https:;
-                 frame-src https://agent.d-id.com https://*.d-id.com https:;
-                 worker-src 'self' blob: https:;">
-
-  <!-- iOS 加速外域解析/握手 -->
-  <link rel="preconnect" href="https://agent.d-id.com" crossorigin>
-  <link rel="dns-prefetch" href="//agent.d-id.com">
-
   <style>
-    html, body { margin:0; padding:0; height:100%; overflow:hidden; background:#000; }
-    #did-agent { width:100vw; height:100vh; display:flex; align-items:center; justify-content:center; background:#000; }
-    iframe, video { max-width:100%; max-height:100%; }
-    /* 引导按钮仅在需要用户手势的环境出现 */
-    #boot {
-      position: absolute; inset: 0; display: none; align-items:center; justify-content:center;
-      background: rgba(0,0,0,0.6); z-index: 9;
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      overflow: hidden;
+      background-color: #000;
     }
-    #boot > button {
-      font-size:16px; padding:12px 18px; border-radius:8px; border:none; color:#fff; background:#007aff;
+
+    #did-agent {
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: #000;
+    }
+
+    /* 如果 DID 内容是 iframe 或 video，你也可以对其进一步限制宽高 */
+    iframe, video {
+      max-width: 100%;
+      max-height: 100%;
     }
   </style>
 </head>
 <body>
   <div id="did-agent"></div>
-  <div id="boot"><button id="bootBtn">点击开始</button></div>
-
-  <script>
-    // 环境判断
-    const ua = navigator.userAgent;
-    const isIOS = /iPhone|iPad|iPod/i.test(ua);
-    const isWeChat = /MicroMessenger/i.test(ua);
-
-    let loaded = false;
-    function loadDidAgentScript() {
-      if (loaded) return;
-      loaded = true;
-      const s = document.createElement('script');
-      s.type = 'module';                  // ESM 版本（D-ID 提供）
-      s.src = 'https://agent.d-id.com/v2/index.js';
-      // 把原来 data-* 参数用 dataset 设置回去
-      s.dataset.mode = 'full';
-      s.dataset.clientKey = 'YXV0aDB8Njg4YjJhNTJhMjlhOWQ2ZTNhMjc5MDRhOk14RUxPWlA3UklNV0FrVjVOamZvbg==';
-      s.dataset.agentId = 'v2_agt_dCyzIM4K';
-      s.dataset.name = 'did-agent';
-      s.dataset.monitor = 'true';
-      s.dataset.targetId = 'did-agent';
-      // 尝试规避跨域 referrer 干扰（可选）
-      s.referrerPolicy = 'no-referrer';
-      document.body.appendChild(s);
-      // 成功后隐藏引导
-      const boot = document.getElementById('boot');
-      if (boot) boot.style.display = 'none';
-    }
-
-    // iOS 微信里：优先等 WeixinJSBridgeReady，再兜底一次“首次触摸”
-    if (isIOS && isWeChat) {
-      document.addEventListener('WeixinJSBridgeReady', loadDidAgentScript, { once: true });
-      // 如果上面事件未触发，则首次手势时加载
-      document.addEventListener('touchend', loadDidAgentScript, { once: true });
-      // 给可视引导
-      document.getElementById('boot').style.display = 'flex';
-      document.getElementById('bootBtn').addEventListener('click', loadDidAgentScript, { once: true });
-    } else {
-      // 其他环境正常按页面加载
-      window.addEventListener('load', loadDidAgentScript, { once: true });
-    }
-  </script>
+  <script type="module"
+      src="https://agent.d-id.com/v2/index.js"
+      data-mode="full"
+      data-client-key="YXV0aDB8Njg4YjJhNTJhMjlhOWQ2ZTNhMjc5MDRhOk14RUxPWlA3UklNV0FrVjVOamZvbg=="
+      data-agent-id="v2_agt_dCyzIM4K"
+      data-name="did-agent"
+      data-monitor="true"
+      data-target-id="did-agent">
+</script>
 </body>
 </html>
